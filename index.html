@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Explorer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Movie Explorer</h1>
+        <div class="filter-section">
+            <div class="filter-group">
+                <select id="mediaType">
+                    <option value="movie">Movies</option>
+                    <option value="tv">TV Shows</option>
+                </select>
+                <select id="sortBy">
+                    <option value="popularity.desc">Popularity</option>
+                    <option value="vote_average.desc">Rating</option>
+                    <option value="release_date.desc">Release Date</option>
+                </select>
+                <select id="genre">
+                    <option value="">All Genres</option>
+                    <!-- Will be populated via JavaScript -->
+                </select>
+                <select id="country">
+                    <option value="">All Countries</option>
+                    <!-- Will be populated via JavaScript -->
+                </select>
+            </div>
+            <div class="filter-group">
+                <input type="text" id="searchInput" placeholder="Search...">
+                <select id="year">
+                    <option value="">All Years</option>
+                    <!-- Will be populated via JavaScript -->
+                </select>
+                <button id="filterToggle" class="mobile-only">
+                    <i class="fas fa-filter"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="tabs">
+            <button class="tab active" data-tab="discover">Discover</button>
+            <button class="tab" data-tab="favorites">Favorites</button>
+        </div>
+
+        <div class="content-section">
+            <div id="movieGrid" class="movie-grid">
+                <!-- Movies will be populated here -->
+            </div>
+        </div>
+
+        <template id="movieTemplate">
+            <div class="movie-card">
+                <div class="poster-container">
+                    <img class="movie-poster" src="" alt="">
+                    <button class="favorite-btn">
+                        <i class="far fa-bookmark"></i>
+                    </button>
+                </div>
+                <div class="movie-info">
+                    <h3 class="movie-title"></h3>
+                    <div class="movie-meta">
+                        <span class="release-date"></span>
+                        <span class="rating"><i class="fas fa-star"></i> <span class="rating-value"></span></span>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </main>
+
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

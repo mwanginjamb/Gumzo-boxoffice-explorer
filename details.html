@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Details - Movie Explorer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="details-page">
+    <header>
+        <nav>
+            <a href="index.html" class="back-button">
+                <i class="fas fa-arrow-left"></i> Back to Movies
+            </a>
+        </nav>
+    </header>
+
+    <main class="details-container">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+        </div>
+        
+        <div class="details-content" style="display: none;">
+            <div class="details-header">
+                <div class="poster-container">
+                    <img class="movie-poster" src="" alt="">
+                    <button class="favorite-btn">
+                        <i class="far fa-bookmark"></i>
+                    </button>
+                </div>
+                <div class="header-info">
+                    <h1 class="title"></h1>
+                    <div class="meta-info">
+                        <span class="release-date"></span>
+                        <span class="runtime"></span>
+                        <span class="rating">
+                            <i class="fas fa-star"></i>
+                            <span class="rating-value"></span>
+                        </span>
+                    </div>
+                    <div class="genres"></div>
+                </div>
+            </div>
+
+            <div class="details-grid">
+                <section class="overview">
+                    <h2>Overview</h2>
+                    <p class="overview-text"></p>
+                </section>
+
+                <section class="cast">
+                    <h2>Top Cast</h2>
+                    <div class="cast-grid"></div>
+                </section>
+
+                <section class="additional-info">
+                    <h2>Additional Information</h2>
+                    <div class="info-grid">
+                        <div class="info-item status">
+                            <h3>Status</h3>
+                            <p></p>
+                        </div>
+                        <div class="info-item original-language">
+                            <h3>Original Language</h3>
+                            <p></p>
+                        </div>
+                        <div class="info-item budget">
+                            <h3>Budget</h3>
+                            <p></p>
+                        </div>
+                        <div class="info-item revenue">
+                            <h3>Revenue</h3>
+                            <p></p>
+                        </div>
+                        <div class="info-item production-companies">
+                            <h3>Production Companies</h3>
+                            <p></p>
+                        </div>
+                        <div class="info-item production-countries">
+                            <h3>Production Countries</h3>
+                            <p></p>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="videos">
+                    <h2>Videos</h2>
+                    <div class="videos-grid"></div>
+                </section>
+
+                <section class="similar">
+                    <h2>Similar Titles</h2>
+                    <div class="similar-grid"></div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <script src="config.js"></script>
+    <script src="details.js"></script>
+</body>
+</html>
