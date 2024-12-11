@@ -106,6 +106,9 @@ select, input {
 
 .poster-container {
     position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding-top: 150%;
 }
 
@@ -118,19 +121,36 @@ select, input {
     object-fit: cover;
 }
 
+.episode-info {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    z-index: 2;
+    backdrop-filter: blur(2px);
+}
+
 .favorite-btn {
     position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    background: rgba(255, 255, 255, 0.9);
+    top: 10px;
+    right: 10px;
+    background: none;
     border: none;
-    border-radius: 50%;
-    width: 32px;
-    height: 32px;
+    color: white;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    z-index: 2;
+    padding: 5px;
+    font-size: 1.2em;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.favorite-btn:hover {
+    transform: scale(1.1);
 }
 
 .movie-info {
@@ -353,20 +373,71 @@ select, input {
 
 /* Multiple Select Styles */
 select[multiple] {
-    min-height: 100px;
+    height: 38px;
     padding: 5px;
+    overflow: hidden;
+    transition: height 0.3s ease;
+    cursor: pointer;
+}
+
+select[multiple]:focus {
+    height: 200px;
     overflow-y: auto;
+    position: absolute;
+    z-index: 1000;
+    background: white;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-radius: 4px;
 }
 
 select[multiple] option {
     padding: 5px;
     margin: 2px 0;
     border-radius: 3px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 select[multiple] option:checked {
     background-color: #3498db;
     color: white;
+}
+
+/* Container for selects to handle the absolute positioning */
+.filter-group select[multiple] {
+    position: relative;
+    min-width: 150px;
+}
+
+/* Custom scrollbar for better appearance */
+select[multiple]::-webkit-scrollbar {
+    width: 8px;
+}
+
+select[multiple]::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+select[multiple]::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+select[multiple]::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Show selected count */
+select[multiple]::after {
+    content: attr(data-selected-count);
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 12px;
+    color: #666;
 }
 
 #clearFilters {

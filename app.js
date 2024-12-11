@@ -37,16 +37,19 @@ class MovieApp {
 
         document.getElementById('genre').addEventListener('change', (e) => {
             this.filters.genres = Array.from(e.target.selectedOptions).map(option => option.value).filter(val => val !== '');
+            this.updateSelectedCount(e.target);
             this.resetAndFetch();
         });
 
         document.getElementById('country').addEventListener('change', (e) => {
             this.filters.countries = Array.from(e.target.selectedOptions).map(option => option.value).filter(val => val !== '');
+            this.updateSelectedCount(e.target);
             this.resetAndFetch();
         });
 
         document.getElementById('year').addEventListener('change', (e) => {
             this.filters.years = Array.from(e.target.selectedOptions).map(option => option.value).filter(val => val !== '');
+            this.updateSelectedCount(e.target);
             this.resetAndFetch();
         });
 
@@ -83,6 +86,11 @@ class MovieApp {
             if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 1000) {
                 this.loadMoreMovies(true);
             }
+        });
+
+        // Initialize selected counts
+        ['genre', 'country', 'year'].forEach(id => {
+            this.updateSelectedCount(document.getElementById(id));
         });
     }
 
@@ -140,7 +148,7 @@ class MovieApp {
         }
     }
 
-    async fetchMovies() {
+    async fetchMovies(option) {
         try {
             let url = `${config.baseUrl}/discover/${this.filters.mediaType}?api_key=${config.apiKey}&page=${this.currentPage}&sort_by=${this.filters.sortBy}`;
 
@@ -156,7 +164,7 @@ class MovieApp {
 
             // Add multiple years if selected
             if (this.filters.years.length > 0) {
-                const yearConditions = this.filters.years.map(year => 
+                const yearConditions = this.filters.years.map(year =>
                     `${year}-01-01|${year}-12-31`
                 ).join('|');
                 url += `&primary_release_date.gte=${yearConditions}`;
@@ -168,20 +176,20 @@ class MovieApp {
 
             const response = await fetch(url);
             const data = await response.json();
-            this.displayMovies(data.results);
+            this.displayMovies(data.results, option);
         } catch (error) {
             console.error('Error fetching movies:', error);
         }
     }
 
-    displayMovies(movies, append = false) {
+    async displayMovies(movies, append = false) {
         console.log(`Appending option is .... ${append}`);
         const movieGrid = document.getElementById('movieGrid');
         if (!append) movieGrid.innerHTML = '';
 
         const template = document.getElementById('movieTemplate');
 
-        movies.forEach(movie => {
+        for (const movie of movies) {
             const movieElement = template.content.cloneNode(true);
 
             const posterContainer = movieElement.querySelector('.poster-container');
@@ -194,6 +202,21 @@ class MovieApp {
                 ? `${config.imageBaseUrl}${movie.poster_path}`
                 : 'placeholder-image.jpg';
             poster.alt = movie.title || movie.name;
+
+            // Add episode info for TV shows
+            if (this.filters.mediaType === 'tv') {
+                try {
+                    const episodeInfo = await this.fetchLatestEpisode(movie.id);
+                    if (episodeInfo) {
+                        const episodeDisplay = document.createElement('div');
+                        episodeDisplay.className = 'episode-info';
+                        episodeDisplay.innerHTML = `S${episodeInfo.season_number} E${episodeInfo.episode_number}`;
+                        posterContainer.appendChild(episodeDisplay);
+                    }
+                } catch (error) {
+                    console.error('Error fetching episode info:', error);
+                }
+            }
 
             // Restructure the poster container to include the link
             posterContainer.insertBefore(posterLink, poster);
@@ -216,7 +239,25 @@ class MovieApp {
             favoriteBtn.addEventListener('click', () => this.toggleFavorite(movie));
 
             movieGrid.appendChild(movieElement);
-        });
+        }
+    }
+
+    async fetchLatestEpisode(tvId) {
+        try {
+            const response = await fetch(`${config.baseUrl}/tv/${tvId}?api_key=${config.apiKey}`);
+            const data = await response.json();
+            
+            if (data.last_episode_to_air) {
+                return {
+                    season_number: data.last_episode_to_air.season_number,
+                    episode_number: data.last_episode_to_air.episode_number
+                };
+            }
+            return null;
+        } catch (error) {
+            console.error('Error fetching TV show details:', error);
+            return null;
+        }
     }
 
     toggleFavorite(movie) {
@@ -255,7 +296,7 @@ class MovieApp {
         this.fetchMovies(option);
     }
 
-    loadMoreMovies(option) {
+    loadMoreMovies(option = false) {
         if (this.currentTab === 'discover') {
             this.currentPage++;
             this.fetchMovies(option);
@@ -267,6 +308,7 @@ class MovieApp {
         ['genre', 'country', 'year'].forEach(filterId => {
             const element = document.getElementById(filterId);
             Array.from(element.options).forEach(option => option.selected = false);
+            this.updateSelectedCount(element);
         });
 
         // Reset filters object
@@ -284,6 +326,11 @@ class MovieApp {
 
         // Fetch movies with cleared filters
         this.resetAndFetch();
+    }
+
+    updateSelectedCount(selectElement) {
+        const selectedCount = Array.from(selectElement.selectedOptions).filter(option => option.value !== '').length;
+        selectElement.setAttribute('data-selected-count', selectedCount ? `${selectedCount} selected` : '');
     }
 }
 
