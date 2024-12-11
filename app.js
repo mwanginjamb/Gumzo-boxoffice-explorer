@@ -6,10 +6,10 @@ class MovieApp {
         this.filters = {
             mediaType: 'movie',
             sortBy: 'popularity.desc',
-            genre: '',
-            year: '2024',
+            genres: [],
+            years: [],
             query: '',
-            country: ''
+            countries: []
         };
 
         this.init();
@@ -36,18 +36,23 @@ class MovieApp {
         });
 
         document.getElementById('genre').addEventListener('change', (e) => {
-            this.filters.genre = e.target.value;
+            this.filters.genres = Array.from(e.target.selectedOptions).map(option => option.value).filter(val => val !== '');
             this.resetAndFetch();
         });
 
         document.getElementById('country').addEventListener('change', (e) => {
-            this.filters.country = e.target.value;
+            this.filters.countries = Array.from(e.target.selectedOptions).map(option => option.value).filter(val => val !== '');
             this.resetAndFetch();
         });
 
         document.getElementById('year').addEventListener('change', (e) => {
-            this.filters.year = e.target.value;
+            this.filters.years = Array.from(e.target.selectedOptions).map(option => option.value).filter(val => val !== '');
             this.resetAndFetch();
+        });
+
+        // Clear filters button
+        document.getElementById('clearFilters').addEventListener('click', () => {
+            this.clearFilters();
         });
 
         // Search input with debounce
@@ -135,27 +140,35 @@ class MovieApp {
         }
     }
 
-    async fetchMovies(option = false) {
+    async fetchMovies() {
         try {
-            let url;
+            let url = `${config.baseUrl}/discover/${this.filters.mediaType}?api_key=${config.apiKey}&page=${this.currentPage}&sort_by=${this.filters.sortBy}`;
+
+            // Add multiple genres if selected
+            if (this.filters.genres.length > 0) {
+                url += `&with_genres=${this.filters.genres.join(',')}`;
+            }
+
+            // Add multiple countries if selected
+            if (this.filters.countries.length > 0) {
+                url += `&with_origin_country=${this.filters.countries.join('|')}`;
+            }
+
+            // Add multiple years if selected
+            if (this.filters.years.length > 0) {
+                const yearConditions = this.filters.years.map(year => 
+                    `${year}-01-01|${year}-12-31`
+                ).join('|');
+                url += `&primary_release_date.gte=${yearConditions}`;
+            }
+
             if (this.filters.query) {
                 url = `${config.baseUrl}/search/${this.filters.mediaType}?api_key=${config.apiKey}&query=${encodeURIComponent(this.filters.query)}&page=${this.currentPage}`;
-            } else {
-                url = `${config.baseUrl}/discover/${this.filters.mediaType}?api_key=${config.apiKey}&sort_by=${this.filters.sortBy}&page=${this.currentPage}`;
-                if (this.filters.genre) url += `&with_genres=${this.filters.genre}`;
-                if (this.filters.year) url += `&year=${this.filters.year}`;
-                if (this.filters.country) {
-                    if (this.filters.mediaType === 'movie') {
-                        url += `&with_origin_country=${this.filters.country}`;
-                    } else {
-                        url += `&with_origin_country=${this.filters.country}`;
-                    }
-                }
             }
 
             const response = await fetch(url);
             const data = await response.json();
-            this.displayMovies(data.results, option);
+            this.displayMovies(data.results);
         } catch (error) {
             console.error('Error fetching movies:', error);
         }
@@ -247,6 +260,30 @@ class MovieApp {
             this.currentPage++;
             this.fetchMovies(option);
         }
+    }
+
+    clearFilters() {
+        // Reset all multi-select elements
+        ['genre', 'country', 'year'].forEach(filterId => {
+            const element = document.getElementById(filterId);
+            Array.from(element.options).forEach(option => option.selected = false);
+        });
+
+        // Reset filters object
+        this.filters = {
+            mediaType: this.filters.mediaType,
+            sortBy: 'popularity.desc',
+            genres: [],
+            years: [],
+            query: '',
+            countries: []
+        };
+
+        // Reset search input
+        document.getElementById('searchInput').value = '';
+
+        // Fetch movies with cleared filters
+        this.resetAndFetch();
     }
 }
 

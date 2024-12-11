@@ -351,6 +351,50 @@ select, input {
     margin-bottom: 1rem;
 }
 
+/* Multiple Select Styles */
+select[multiple] {
+    min-height: 100px;
+    padding: 5px;
+    overflow-y: auto;
+}
+
+select[multiple] option {
+    padding: 5px;
+    margin: 2px 0;
+    border-radius: 3px;
+}
+
+select[multiple] option:checked {
+    background-color: #3498db;
+    color: white;
+}
+
+#clearFilters {
+    padding: 8px 16px;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+#clearFilters:hover {
+    background-color: #c0392b;
+}
+
+/* Responsive adjustments for filters */
+@media (max-width: 768px) {
+    select[multiple] {
+        min-height: 80px;
+    }
+    
+    .filter-group {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+}
+
 /* Mobile-specific styles */
 @media (max-width: 768px) {
     .filter-section {

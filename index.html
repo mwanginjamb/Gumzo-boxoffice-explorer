@@ -21,21 +21,22 @@
                     <option value="vote_average.desc">Rating</option>
                     <option value="release_date.desc">Release Date</option>
                 </select>
-                <select id="genre">
+                <select id="genre" multiple>
                     <option value="">All Genres</option>
                     <!-- Will be populated via JavaScript -->
                 </select>
-                <select id="country">
+                <select id="country" multiple>
                     <option value="">All Countries</option>
                     <!-- Will be populated via JavaScript -->
                 </select>
             </div>
             <div class="filter-group">
                 <input type="text" id="searchInput" placeholder="Search...">
-                <select id="year">
+                <select id="year" multiple>
                     <option value="">All Years</option>
                     <!-- Will be populated via JavaScript -->
                 </select>
+                <button id="clearFilters">Clear Filters</button>
                 <button id="filterToggle" class="mobile-only">
                     <i class="fas fa-filter"></i>
                 </button>
