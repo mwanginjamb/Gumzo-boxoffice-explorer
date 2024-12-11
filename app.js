@@ -11,7 +11,7 @@ class MovieApp {
             query: '',
             country: ''
         };
-        
+
         this.init();
     }
 
@@ -76,7 +76,7 @@ class MovieApp {
         // Infinite scroll
         window.addEventListener('scroll', () => {
             if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 1000) {
-                this.loadMoreMovies();
+                this.loadMoreMovies(true);
             }
         });
     }
@@ -115,7 +115,7 @@ class MovieApp {
         const countrySelect = document.getElementById('country');
         // Sort countries by English name
         countries.sort((a, b) => a.english_name.localeCompare(b.english_name));
-        
+
         countries.forEach(country => {
             const option = document.createElement('option');
             option.value = country.iso_3166_1;
@@ -135,7 +135,7 @@ class MovieApp {
         }
     }
 
-    async fetchMovies() {
+    async fetchMovies(option = false) {
         try {
             let url;
             if (this.filters.query) {
@@ -155,40 +155,41 @@ class MovieApp {
 
             const response = await fetch(url);
             const data = await response.json();
-            this.displayMovies(data.results);
+            this.displayMovies(data.results, option);
         } catch (error) {
             console.error('Error fetching movies:', error);
         }
     }
 
     displayMovies(movies, append = false) {
+        console.log(`Appending option is .... ${append}`);
         const movieGrid = document.getElementById('movieGrid');
         if (!append) movieGrid.innerHTML = '';
 
         const template = document.getElementById('movieTemplate');
-        
+
         movies.forEach(movie => {
             const movieElement = template.content.cloneNode(true);
-            
+
             const posterContainer = movieElement.querySelector('.poster-container');
             const poster = movieElement.querySelector('.movie-poster');
-            
+
             // Make poster clickable
             const posterLink = document.createElement('a');
             posterLink.href = `details.html?id=${movie.id}&type=${this.filters.mediaType}`;
-            poster.src = movie.poster_path 
+            poster.src = movie.poster_path
                 ? `${config.imageBaseUrl}${movie.poster_path}`
                 : 'placeholder-image.jpg';
             poster.alt = movie.title || movie.name;
-            
+
             // Restructure the poster container to include the link
             posterContainer.insertBefore(posterLink, poster);
             posterLink.appendChild(poster);
 
             movieElement.querySelector('.movie-title').textContent = movie.title || movie.name;
-            
+
             const releaseDate = movie.release_date || movie.first_air_date;
-            movieElement.querySelector('.release-date').textContent = releaseDate 
+            movieElement.querySelector('.release-date').textContent = releaseDate
                 ? new Date(releaseDate).getFullYear()
                 : 'N/A';
 
@@ -213,7 +214,7 @@ class MovieApp {
             this.favorites.splice(index, 1);
         }
         localStorage.setItem('favorites', JSON.stringify(this.favorites));
-        
+
         if (this.currentTab === 'favorites') {
             this.displayMovies(this.favorites);
         } else {
@@ -236,15 +237,15 @@ class MovieApp {
         }
     }
 
-    resetAndFetch() {
+    resetAndFetch(option = false) {
         this.currentPage = 1;
-        this.fetchMovies();
+        this.fetchMovies(option);
     }
 
-    loadMoreMovies() {
+    loadMoreMovies(option) {
         if (this.currentTab === 'discover') {
             this.currentPage++;
-            this.fetchMovies();
+            this.fetchMovies(option);
         }
     }
 }
