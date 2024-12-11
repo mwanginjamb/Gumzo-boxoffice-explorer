@@ -7,7 +7,7 @@ class MovieApp {
             mediaType: 'movie',
             sortBy: 'popularity.desc',
             genre: '',
-            year: '',
+            year: '2024',
             query: '',
             country: ''
         };
