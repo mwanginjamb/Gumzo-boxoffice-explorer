@@ -176,7 +176,7 @@ class MovieApp {
 
             const response = await fetch(url);
             const data = await response.json();
-            this.displayMovies(data.results);
+            this.displayMovies(data.results, option);
         } catch (error) {
             console.error('Error fetching movies:', error);
         }
@@ -197,14 +197,14 @@ class MovieApp {
 
             // Make poster clickable
             const posterLink = document.createElement('a');
-            posterLink.href = `details.html?id=${movie.id}&type=${this.filters.mediaType}`;
+            posterLink.href = `details.html?id=${movie.id}&type=${movie?.type || this.filters.mediaType}`;
             poster.src = movie.poster_path
                 ? `${config.imageBaseUrl}${movie.poster_path}`
                 : 'placeholder-image.jpeg';
             poster.alt = movie.title || movie.name;
 
             // Add episode info for TV shows
-            if (this.filters.mediaType === 'tv') {
+            if (this.filters.mediaType === 'tv' || movie?.type === 'tv') {
                 try {
                     const episodeInfo = await this.fetchLatestEpisode(movie.id);
                     if (episodeInfo) {
@@ -236,6 +236,7 @@ class MovieApp {
             favoriteBtn.querySelector('i').classList.toggle('fas', isFavorite);
             favoriteBtn.querySelector('i').classList.toggle('far', !isFavorite);
 
+            movie.type = this.filters.mediaType;
             favoriteBtn.addEventListener('click', () => this.toggleFavorite(movie));
 
             movieGrid.appendChild(movieElement);
