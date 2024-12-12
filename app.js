@@ -176,7 +176,7 @@ class MovieApp {
 
             const response = await fetch(url);
             const data = await response.json();
-            this.displayMovies(data.results, option);
+            this.displayMovies(data.results);
         } catch (error) {
             console.error('Error fetching movies:', error);
         }
@@ -200,7 +200,7 @@ class MovieApp {
             posterLink.href = `details.html?id=${movie.id}&type=${this.filters.mediaType}`;
             poster.src = movie.poster_path
                 ? `${config.imageBaseUrl}${movie.poster_path}`
-                : 'placeholder-image.jpg';
+                : 'placeholder-image.jpeg';
             poster.alt = movie.title || movie.name;
 
             // Add episode info for TV shows
@@ -246,7 +246,7 @@ class MovieApp {
         try {
             const response = await fetch(`${config.baseUrl}/tv/${tvId}?api_key=${config.apiKey}`);
             const data = await response.json();
-            
+
             if (data.last_episode_to_air) {
                 return {
                     season_number: data.last_episode_to_air.season_number,

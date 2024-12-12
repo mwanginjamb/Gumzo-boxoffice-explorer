@@ -14,13 +14,19 @@ class MovieDetails {
 
     async init() {
         await this.loadDetails();
-        this.setupEventListeners();
+        this.initializeEventListeners();
     }
 
-    setupEventListeners() {
+    initializeEventListeners() {
         document.querySelector('.favorite-btn').addEventListener('click', () => {
             this.toggleFavorite(this.movieData);
         });
+
+        // Initialize social share buttons
+        document.getElementById('facebook-share').addEventListener('click', () => this.shareOnFacebook());
+        document.getElementById('twitter-share').addEventListener('click', () => this.shareOnTwitter());
+        document.getElementById('pinterest-share').addEventListener('click', () => this.shareOnPinterest());
+        document.getElementById('whatsapp-share').addEventListener('click', () => this.shareOnWhatsApp());
     }
 
     async loadDetails() {
@@ -166,6 +172,93 @@ class MovieDetails {
         const favoriteBtn = document.querySelector('.favorite-btn i');
         favoriteBtn.classList.toggle('fas', isFavorite);
         favoriteBtn.classList.toggle('far', !isFavorite);
+
+        this.updateMetaTags(this.movieData);
+    }
+
+    updateMetaTags(movie) {
+        const baseUrl = 'https://boxoffice.gumzosystems.com';
+        const posterBase = 'https://image.tmdb.org/t/p/w500';
+        const currentUrl = `${baseUrl}/details.html?id=${movie.id}`;
+        
+        // Helper function to safely update meta content
+        const updateMetaContent = (id, content) => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.content = content;
+            }
+        };
+
+        // Helper function to safely update text content
+        const updateTextContent = (id, content) => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.textContent = content;
+            }
+        };
+        
+        // Update basic meta tags
+        updateMetaContent('meta-description', movie.overview);
+        updateMetaContent('meta-keywords', `movie, ${movie.title}, ${movie.genres?.map(g => g.name).join(', ') || ''}, box office, ratings`);
+        updateTextContent('page-title', `${movie.title} - BoxOffice`);
+        
+        // Update Open Graph tags
+        updateMetaContent('og-title', movie.title);
+        updateMetaContent('og-description', movie.overview);
+        updateMetaContent('og-image', `${posterBase}${movie.poster_path}`);
+        updateMetaContent('og-url', currentUrl);
+        
+        // Update Twitter Card tags
+        updateMetaContent('twitter-title', movie.title);
+        updateMetaContent('twitter-description', movie.overview);
+        updateMetaContent('twitter-image', `${posterBase}${movie.poster_path}`);
+        
+        // Update structured data
+        const structuredData = {
+            "@context": "https://schema.org",
+            "@type": "Movie",
+            "name": movie.title,
+            "image": `${posterBase}${movie.poster_path}`,
+            "description": movie.overview,
+            "datePublished": movie.release_date,
+            "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": movie.vote_average,
+                "ratingCount": movie.vote_count
+            }
+        };
+
+        const structuredDataElement = document.getElementById('movie-structured-data');
+        if (structuredDataElement) {
+            structuredDataElement.textContent = JSON.stringify(structuredData, null, 2);
+        }
+    }
+
+    shareOnFacebook() {
+        const url = encodeURIComponent(window.location.href);
+        const title = encodeURIComponent(this.movieData.title);
+        const description = encodeURIComponent(this.movieData.overview);
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}&quote=${title} - ${description}`, '_blank');
+    }
+
+    shareOnTwitter() {
+        const url = encodeURIComponent(window.location.href);
+        const title = encodeURIComponent(this.movieData.title);
+        window.open(`https://twitter.com/intent/tweet?url=${url}&text=Check out "${title}" on BoxOffice`, '_blank');
+    }
+
+    shareOnPinterest() {
+        const url = encodeURIComponent(window.location.href);
+        const image = encodeURIComponent(`https://image.tmdb.org/t/p/w500${this.movieData.poster_path}`);
+        const description = encodeURIComponent(`${this.movieData.title} - ${this.movieData.overview}`);
+        window.open(`https://pinterest.com/pin/create/button/?url=${url}&media=${image}&description=${description}`, '_blank');
+    }
+
+    shareOnWhatsApp() {
+        const url = encodeURIComponent(window.location.href);
+        const title = encodeURIComponent(this.movieData.title);
+        const description = encodeURIComponent(this.movieData.overview);
+        window.open(`https://api.whatsapp.com/send?text=${title}%0A${description}%0A${url}`, '_blank');
     }
 
     toggleFavorite(movie) {

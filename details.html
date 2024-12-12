@@ -4,11 +4,36 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movie Details - Movie Explorer</title>
+    
+    <!-- Dynamic SEO Meta Tags -->
+    <meta name="description" content="Discover amazing movies and TV shows" id="meta-description">
+    <meta name="keywords" content="movies, tv shows, entertainment" id="meta-keywords">
+    
+    <!-- Open Graph Tags for Facebook -->
+    <meta property="og:title" content="Movie Details" id="og-title">
+    <meta property="og:description" content="Discover amazing movies and TV shows" id="og-description">
+    <meta property="og:image" content="" id="og-image">
+    <meta property="og:url" content="" id="og-url">
+    <meta property="og:type" content="video.movie">
+    
+    <!-- Twitter Card Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Movie Details" id="twitter-title">
+    <meta name="twitter:description" content="Discover amazing movies and TV shows" id="twitter-description">
+    <meta name="twitter:image" content="" id="twitter-image">
+    
+    <!-- Pinterest Rich Pins -->
+    <meta property="product:price:amount" content="0" id="price-amount">
+    <meta property="product:price:currency" content="USD">
+    
+    <!-- WhatsApp Preview -->
+    <meta property="og:site_name" content="BoxOffice">
+    <meta property="og:locale" content="en_US">
+    
+    <title id="page-title">Movie Details - BoxOffice</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
-    <script defer src="https://analytics.gumzosystems.com/custom"
-        data-website-id="d065e684-2465-414c-a0ba-b489ac06801b"></script>
+    <script defer src="https://analytics.gumzosystems.com/custom" data-website-id=""></script>
 </head>
 
 <body class="details-page">
@@ -51,6 +76,25 @@
                 <section class="overview">
                     <h2>Overview</h2>
                     <p class="overview-text"></p>
+                    
+                    <!-- Social Sharing Buttons -->
+                    <div class="social-share">
+                        <h3>Share this movie:</h3>
+                        <div class="share-buttons">
+                            <button class="share-btn facebook" id="facebook-share">
+                                <i class="fab fa-facebook"></i> Share
+                            </button>
+                            <button class="share-btn twitter" id="twitter-share">
+                                <i class="fab fa-x-twitter"></i> Tweet
+                            </button>
+                            <button class="share-btn pinterest" id="pinterest-share">
+                                <i class="fab fa-pinterest"></i> Pin
+                            </button>
+                            <button class="share-btn whatsapp" id="whatsapp-share">
+                                <i class="fab fa-whatsapp"></i> Share
+                            </button>
+                        </div>
+                    </div>
                 </section>
 
                 <section class="cast">
@@ -99,6 +143,23 @@
                 </section>
             </div>
         </div>
+
+        <!-- Structured Data -->
+        <script type="application/ld+json" id="movie-structured-data">
+        {
+            "@context": "https://schema.org",
+            "@type": "Movie",
+            "name": "",
+            "image": "",
+            "description": "",
+            "datePublished": "",
+            "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "",
+                "ratingCount": ""
+            }
+        }
+        </script>
     </main>
 
     <script src="config.js" type="application/javascript"></script>
