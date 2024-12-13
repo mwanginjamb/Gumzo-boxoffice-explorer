@@ -450,6 +450,109 @@ input {
     background-color: #25D366;
 }
 
+/* Affiliate Banner Styles */
+.affiliate-banner {
+    background: linear-gradient(45deg, #232f3e, #37475a);
+    color: white;
+    padding: 12px 20px;
+    position: relative;
+    text-align: center;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+.affiliate-banner.hidden {
+    display: none;
+}
+
+.affiliate-banner a {
+    color: #89d9ff;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 0;
+}
+
+.affiliate-banner a:hover {
+    color: #b8e6ff;
+    text-decoration: underline;
+}
+
+.banner-text {
+    font-size: 0.95rem;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.banner-close {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 1.5rem;
+    padding: 0 8px;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.banner-close:hover {
+    opacity: 1;
+}
+
+.banner-toggle {
+    text-align: center;
+    margin-bottom: 20px;
+    display: none;
+}
+
+.banner-toggle.visible {
+    display: block;
+}
+
+.toggle-button {
+    background: #232f3e;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.toggle-button:hover {
+    background: #37475a;
+}
+
+@media (max-width: 768px) {
+    .affiliate-banner {
+        padding: 10px 15px;
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .banner-text {
+        font-size: 0.85rem;
+    }
+
+    .affiliate-banner a {
+        font-size: 0.85rem;
+    }
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
     .share-buttons {

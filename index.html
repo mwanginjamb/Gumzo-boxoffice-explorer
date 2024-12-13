@@ -4,21 +4,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Discover the latest movies and TV shows with our comprehensive database. Get real-time updates on box office hits, ratings, reviews, and upcoming releases worldwide.">
-    <meta name="keywords" content="movies, TV shows, box office, cinema, film database, movie ratings, TV series, entertainment, movie reviews">
+    <meta name="description"
+        content="Discover the latest movies and TV shows with our comprehensive database. Get real-time updates on box office hits, ratings, reviews, and upcoming releases worldwide.">
+    <meta name="keywords"
+        content="movies, TV shows, box office, cinema, film database, movie ratings, TV series, entertainment, movie reviews">
     <meta name="robots" content="index, follow">
     <meta property="og:title" content="Movie Explorer - Your Ultimate Movie & TV Show Database">
-    <meta property="og:description" content="Explore the world of cinema with real-time updates on movies, TV shows, box office performance, and entertainment news.">
+    <meta property="og:description"
+        content="Explore the world of cinema with real-time updates on movies, TV shows, box office performance, and entertainment news.">
     <meta property="og:type" content="website">
     <meta property="og:image" content="/images/movie-explorer-preview.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Movie Explorer - Your Ultimate Movie & TV Show Database">
-    <meta name="twitter:description" content="Explore the world of cinema with real-time updates on movies, TV shows, box office performance, and entertainment news.">
+    <meta name="twitter:description"
+        content="Explore the world of cinema with real-time updates on movies, TV shows, box office performance, and entertainment news.">
     <link rel="canonical" href="https://boxoffice.gumzosystems.com/" />
     <title>Movie Explorer</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
     <script defer src="https://analytics.gumzosystems.com/custom" data-website-id=""></script>
+    <script defer src="script.js"></script>
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -81,6 +86,13 @@
     </header>
 
     <main>
+        <div class="affiliate-banner" id="affiliateBanner">
+            <a href="#" target="_blank" rel="nofollow sponsored"></a>
+            <button class="banner-close" id="closeBanner" aria-label="Close banner">×</button>
+        </div>
+        <div class="banner-toggle" id="bannerToggle">
+            <button class="toggle-button">View Amazing Amazon Deals</button>
+        </div>
         <div class="tabs">
             <button class="tab active" data-tab="discover">Discover</button>
             <button class="tab" data-tab="favorites">Favorites</button>
