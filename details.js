@@ -94,14 +94,16 @@ class MovieDetails {
             .slice(0, 6)
             .map(person => `
                 <div class="cast-member">
-                    <img src="${person.profile_path 
-                        ? config.imageBaseUrl + person.profile_path 
-                        : 'placeholder-person.jpg'}" 
-                        alt="${person.name}">
-                    <div class="cast-info">
-                        <h4>${person.name}</h4>
-                        <p>${person.character}</p>
-                    </div>
+                    <a href="person.html?id=${person.id}" class="cast-link" title="View ${person.name}'s profile">
+                        <img src="${person.profile_path 
+                            ? config.imageBaseUrl + person.profile_path 
+                            : 'placeholder-person.jpg'}" 
+                            alt="${person.name}">
+                        <div class="cast-info">
+                            <h4>${person.name}</h4>
+                            <p>${person.character}</p>
+                        </div>
+                    </a>
                 </div>
             `).join('');
 

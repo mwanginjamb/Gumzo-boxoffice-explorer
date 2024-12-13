@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Person Details - Movie Explorer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="https://analytics.gumzosystems.com/custom" data-website-id=""></script>
+    <script defer src="script.js"></script>
+</head>
+
+<body class="person-details-page">
+    <header>
+        <nav>
+            <a href="#" class="back-button" onclick="history.back()">
+                <i class="fas fa-arrow-left"></i> Back
+            </a>
+        </nav>
+    </header>
+
+    <main class="person-container">
+        <!-- Affiliate Banner -->
+        <div class="affiliate-banner" id="affiliateBanner">
+            <a href="#" target="_blank" rel="nofollow sponsored"></a>
+            <button class="banner-close" id="closeBanner" aria-label="Close banner">×</button>
+        </div>
+        <div class="banner-toggle" id="bannerToggle">
+            <button class="toggle-button">View Amazing Amazon Deals</button>
+        </div>
+
+        
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+        </div>
+
+        <div class="person-content" style="display: none;">
+            <div class="person-header">
+                <div class="profile-container">
+                    <img class="profile-image" src="" alt="">
+                </div>
+                <div class="header-info">
+                    <h1 class="name"></h1>
+                    <div class="meta-info">
+                        <span class="birth-date"></span>
+                        <span class="birth-place"></span>
+                    </div>
+                    <div class="department"></div>
+                </div>
+            </div>
+
+            <section class="biography">
+                <h2>Biography</h2>
+                <p class="biography-text"></p>
+            </section>
+
+            <section class="known-for">
+                <h2>Known For</h2>
+                <div class="known-for-grid">
+                    <!-- Will be populated via JavaScript -->
+                </div>
+            </section>
+
+            <section class="filmography">
+                <h2>Filmography</h2>
+                <div class="filmography-list">
+                    <!-- Will be populated via JavaScript -->
+                </div>
+            </section>
+        </div>
+
+        
+    </main>
+    <script src="config.js" type="application/javascript"></script>
+    <script src="person.js" type="application/javascript"></script>
+</body>
+
+</html>
