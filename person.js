@@ -60,6 +60,15 @@ class PersonDetails {
                 })}${age ? ` (${age} years old)` : ''}`;
         }
 
+        if (this.personData.deathday) {
+            const deathDate = new Date(this.personData.deathday)
+            document.querySelector('.death-date').innerHTML = `<i class="fa fa-dove"></i> Demise: ${deathDate.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            })}`;
+        }
+
         if (this.personData.place_of_birth) {
             document.querySelector('.birth-place').textContent =
                 `Birth Place: ${this.personData.place_of_birth}`;
@@ -75,8 +84,14 @@ class PersonDetails {
         // Update known for section
         const knownForGrid = document.querySelector('.known-for-grid');
         const knownFor = this.personData.combined_credits.cast
-            .sort((a, b) => b.vote_count - a.vote_count)
-            .slice(0, 6);
+            .sort((a, b) => {
+                const dateA = new Date(a.release_date || a.first_air_date || '0000');
+                const dateB = new Date(b.release_date || b.first_air_date || '0000');
+                return dateB - dateA;
+            })
+            .slice(0, 36)
+            .sort((a, b) => b.vote_average - a.vote_average)
+
 
         knownForGrid.innerHTML = knownFor.map(credit => `
             <div class="known-for-item">
@@ -86,8 +101,12 @@ class PersonDetails {
                 : 'placeholder-image.jpg'}" 
                         alt="${credit.title || credit.name}">
                     <div class="known-for-info">
-                        <h4>${credit.title || credit.name}</h4>
-                        <p>${credit.character}</p>
+                        <h4>${credit.title || credit.name}
+                                <i class="fas fa-star"></i>
+                                ${credit.vote_average.toFixed(1)}
+                        </h4>
+                        <p>${credit.character} </p>
+                        <span>Year : ${this.getYear(credit.release_date || credit.first_air_date)}</span>
                     </div>
                 </a>
             </div>
@@ -104,7 +123,7 @@ class PersonDetails {
 
         filmographyList.innerHTML = sortedCredits.map(credit => `
             <div class="filmography-item">
-                <a href="${credit.media_type}.html?id=${credit.id}&type=${credit.media_type}">
+                <a href="details.html?id=${credit.id}&type=${credit.media_type}">
                     <span class="year">${this.getYear(credit.release_date || credit.first_air_date)}</span>
                     <span class="title">${credit.title || credit.name}</span>
                     <span class="character">${credit.character || 'Unknown Role'}</span>

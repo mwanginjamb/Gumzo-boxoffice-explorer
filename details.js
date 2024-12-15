@@ -3,7 +3,7 @@ class MovieDetails {
         this.mediaType = new URLSearchParams(window.location.search).get('type') || 'movie';
         this.id = new URLSearchParams(window.location.search).get('id');
         this.favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-        
+
         if (!this.id) {
             window.location.href = 'index.html';
             return;
@@ -44,6 +44,11 @@ class MovieDetails {
         }
     }
 
+
+    getYear(dateString) {
+        return dateString ? new Date(dateString).getFullYear() : 'TBA';
+    }
+
     updateUI() {
         document.querySelector('.loading-spinner').style.display = 'none';
         document.querySelector('.details-content').style.display = 'block';
@@ -51,31 +56,31 @@ class MovieDetails {
         // Update basic info
         document.title = `${this.movieData.title || this.movieData.name} - Movie Explorer`;
         document.querySelector('.title').textContent = this.movieData.title || this.movieData.name;
-        
+
         // Update poster
         const poster = document.querySelector('.movie-poster');
-        poster.src = this.movieData.poster_path 
+        poster.src = this.movieData.poster_path
             ? `${config.imageBaseUrl}${this.movieData.poster_path}`
             : 'placeholder-image.jpg';
         poster.alt = this.movieData.title || this.movieData.name;
 
         // Update meta info
         const releaseDate = this.movieData.release_date || this.movieData.first_air_date;
-        document.querySelector('.release-date').textContent = releaseDate 
+        document.querySelector('.release-date').textContent = releaseDate
             ? new Date(releaseDate).toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
-              })
+            })
             : 'Release date unknown';
 
-        document.querySelector('.runtime').textContent = this.movieData.runtime 
+        document.querySelector('.runtime').textContent = this.movieData.runtime
             ? `${this.movieData.runtime} min`
-            : this.movieData.episode_run_time?.[0] 
+            : this.movieData.episode_run_time?.[0]
                 ? `${this.movieData.episode_run_time[0]} min per episode`
                 : '';
 
-        document.querySelector('.rating-value').textContent = 
+        document.querySelector('.rating-value').textContent =
             this.movieData.vote_average.toFixed(1);
 
         // Update genres
@@ -85,19 +90,19 @@ class MovieDetails {
             .join('');
 
         // Update overview
-        document.querySelector('.overview-text').textContent = 
+        document.querySelector('.overview-text').textContent =
             this.movieData.overview || 'No overview available';
 
         // Update cast
         const castGrid = document.querySelector('.cast-grid');
         castGrid.innerHTML = this.movieData.credits.cast
-            .slice(0, 6)
+            .slice(0, 12)
             .map(person => `
                 <div class="cast-member">
                     <a href="person.html?id=${person.id}" class="cast-link" title="View ${person.name}'s profile">
-                        <img src="${person.profile_path 
-                            ? config.imageBaseUrl + person.profile_path 
-                            : 'placeholder-person.jpg'}" 
+                        <img src="${person.profile_path
+                    ? config.imageBaseUrl + person.profile_path
+                    : 'placeholder-person.jpg'}" 
                             alt="${person.name}">
                         <div class="cast-info">
                             <h4>${person.name}</h4>
@@ -108,21 +113,21 @@ class MovieDetails {
             `).join('');
 
         // Update additional info
-        document.querySelector('.status p').textContent = 
+        document.querySelector('.status p').textContent =
             this.movieData.status || 'Unknown';
-        document.querySelector('.original-language p').textContent = 
+        document.querySelector('.original-language p').textContent =
             this.movieData.original_language?.toUpperCase() || 'Unknown';
-        document.querySelector('.budget p').textContent = 
+        document.querySelector('.budget p').textContent =
             this.movieData.budget ? `$${this.formatNumber(this.movieData.budget)}` : 'N/A';
-        document.querySelector('.revenue p').textContent = 
+        document.querySelector('.revenue p').textContent =
             this.movieData.revenue ? `$${this.formatNumber(this.movieData.revenue)}` : 'N/A';
-        
-        document.querySelector('.production-companies p').textContent = 
+
+        document.querySelector('.production-companies p').textContent =
             this.movieData.production_companies
                 .map(company => company.name)
                 .join(', ') || 'N/A';
-        
-        document.querySelector('.production-countries p').textContent = 
+
+        document.querySelector('.production-countries p').textContent =
             this.movieData.production_countries
                 .map(country => country.name)
                 .join(', ') || 'N/A';
@@ -133,7 +138,7 @@ class MovieDetails {
             .filter(video => video.type === 'Trailer' || video.type === 'Teaser')
             .slice(0, 3);
 
-        videosGrid.innerHTML = trailers.length 
+        videosGrid.innerHTML = trailers.length
             ? trailers.map(video => `
                 <div class="video-item">
                     <iframe
@@ -150,13 +155,19 @@ class MovieDetails {
         // Update similar titles
         const similarGrid = document.querySelector('.similar-grid');
         similarGrid.innerHTML = this.movieData.similar.results
-            .slice(0, 6)
+            .sort((a, b) => {
+                const dateA = new Date(a.release_date || a.first_air_date || '0000');
+                const dateB = new Date(b.release_date || b.first_air_date || '0000');
+                return dateB - dateA;
+            })
+            .sort((a, b) => b.vote_average - a.vote_average)
+            .slice(0, 18)
             .map(item => `
                 <div class="movie-card">
                     <a href="details.html?id=${item.id}&type=${this.mediaType}">
-                        <img src="${item.poster_path 
-                            ? config.imageBaseUrl + item.poster_path 
-                            : 'placeholder-image.jpg'}" 
+                        <img src="${item.poster_path
+                    ? config.imageBaseUrl + item.poster_path
+                    : 'placeholder-image.jpg'}" 
                             alt="${item.title || item.name}">
                         <div class="movie-info">
                             <h3>${item.title || item.name}</h3>
@@ -164,6 +175,7 @@ class MovieDetails {
                                 <i class="fas fa-star"></i>
                                 ${item.vote_average.toFixed(1)}
                             </span>
+                            <span>${this.getYear(item.release_date || item.first_air_date)}</span>
                         </div>
                     </a>
                 </div>
@@ -182,7 +194,7 @@ class MovieDetails {
         const baseUrl = 'https://boxoffice.gumzosystems.com';
         const posterBase = 'https://image.tmdb.org/t/p/w500';
         const currentUrl = `${baseUrl}/details.html?id=${movie.id}`;
-        
+
         // Helper function to safely update meta content
         const updateMetaContent = (id, content) => {
             const element = document.getElementById(id);
@@ -198,23 +210,23 @@ class MovieDetails {
                 element.textContent = content;
             }
         };
-        
+
         // Update basic meta tags
         updateMetaContent('meta-description', movie.overview);
         updateMetaContent('meta-keywords', `movie, ${movie.title}, ${movie.genres?.map(g => g.name).join(', ') || ''}, box office, ratings`);
         updateTextContent('page-title', `${movie.title} - BoxOffice`);
-        
+
         // Update Open Graph tags
         updateMetaContent('og-title', movie.title);
         updateMetaContent('og-description', movie.overview);
         updateMetaContent('og-image', `${posterBase}${movie.poster_path}`);
         updateMetaContent('og-url', currentUrl);
-        
+
         // Update Twitter Card tags
         updateMetaContent('twitter-title', movie.title);
         updateMetaContent('twitter-description', movie.overview);
         updateMetaContent('twitter-image', `${posterBase}${movie.poster_path}`);
-        
+
         // Update structured data
         const structuredData = {
             "@context": "https://schema.org",
@@ -271,7 +283,7 @@ class MovieDetails {
             this.favorites.splice(index, 1);
         }
         localStorage.setItem('favorites', JSON.stringify(this.favorites));
-        
+
         const btn = document.querySelector('.favorite-btn i');
         btn.classList.toggle('fas');
         btn.classList.toggle('far');
@@ -292,6 +304,8 @@ class MovieDetails {
         `;
     }
 }
+
+
 
 // Initialize the details page
 document.addEventListener('DOMContentLoaded', () => {
