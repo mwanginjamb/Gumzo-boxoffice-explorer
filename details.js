@@ -54,14 +54,14 @@ class MovieDetails {
         document.querySelector('.details-content').style.display = 'block';
 
         // Update basic info
-        document.title = `${this.movieData.title || this.movieData.name} - Movie Explorer`;
+        // document.title = `${this.movieData.title || this.movieData.name} - Movie Explorer`;
         document.querySelector('.title').textContent = this.movieData.title || this.movieData.name;
 
         // Update poster
         const poster = document.querySelector('.movie-poster');
         poster.src = this.movieData.poster_path
             ? `${config.imageBaseUrl}${this.movieData.poster_path}`
-            : 'placeholder-image.jpg';
+            : 'placeholderimage.jpg';
         poster.alt = this.movieData.title || this.movieData.name;
 
         // Update meta info
@@ -102,7 +102,7 @@ class MovieDetails {
                     <a href="person.html?id=${person.id}" class="cast-link" title="View ${person.name}'s profile">
                         <img src="${person.profile_path
                     ? config.imageBaseUrl + person.profile_path
-                    : 'placeholder-person.jpg'}" 
+                    : 'placeholder-image.jpeg'}" 
                             alt="${person.name}">
                         <div class="cast-info">
                             <h4>${person.name}</h4>
@@ -140,16 +140,18 @@ class MovieDetails {
 
         videosGrid.innerHTML = trailers.length
             ? trailers.map(video => `
-                <div class="video-item">
-                    <iframe
-                        src="https://www.youtube.com/embed/${video.key}"
-                        title="${video.name}"
-                        frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowfullscreen
-                    ></iframe>
-                </div>
-            `).join('')
+                  <div class="video-item">
+                      <iframe
+                          src="https://www.youtube-nocookie.com/embed/${video.key}?rel=0&modestbranding=1&showinfo=0"
+                          title="${video.name.replace(/"/g, '&quot;')}"
+                          frameborder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                          allowfullscreen
+                          referrerpolicy="strict-origin-when-cross-origin"
+                          loading="lazy"
+                      ></iframe>
+                  </div>
+              `).join('')
             : '<p>No videos available</p>';
 
         // Update similar titles
@@ -167,7 +169,7 @@ class MovieDetails {
                     <a href="details.html?id=${item.id}&type=${this.mediaType}">
                         <img src="${item.poster_path
                     ? config.imageBaseUrl + item.poster_path
-                    : 'placeholder-image.jpg'}" 
+                    : 'placeholder-image.jpeg'}" 
                             alt="${item.title || item.name}">
                         <div class="movie-info">
                             <h3>${item.title || item.name}</h3>
@@ -188,6 +190,8 @@ class MovieDetails {
         favoriteBtn.classList.toggle('far', !isFavorite);
 
         this.updateMetaTags(this.movieData);
+
+        // this.renderMetaTags(this.movieData)
     }
 
     updateMetaTags(movie) {
@@ -248,6 +252,75 @@ class MovieDetails {
         }
     }
 
+    renderMetaTags(movie) {
+        const baseUrl = 'https://boxoffice.gumzosystems.com';
+        const posterBase = 'https://image.tmdb.org/t/p/w500';
+        const currentUrl = `${baseUrl}/details.html?id=${movie.id}`;
+
+        const escapeHtml = (str) => {
+            return str ? str.replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                : '';
+        };
+
+        const genresString = movie.genres?.map(g => g.name).join(', ') || '';
+
+
+        // Directly update existing tags
+        document.getElementById('page-title').textContent = `${escapeHtml(movie.title)} - BoxOffice`;
+
+        // Update meta description
+        const descMeta = document.getElementById('meta-description');
+        if (descMeta) descMeta.setAttribute('content', escapeHtml(movie.overview));
+
+        // Update keywords
+        const keywordsMeta = document.getElementById('meta-keywords');
+        if (keywordsMeta) keywordsMeta.setAttribute('content',
+            `movie, ${escapeHtml(movie.title)}, ${escapeHtml(genresString)}, box office, ratings`
+        );
+
+        // Open Graph tags
+        const updateOgTag = (id, content) => {
+            const tag = document.getElementById(id);
+            if (tag) tag.setAttribute('content', escapeHtml(content));
+        };
+
+        updateOgTag('og-title', movie.title);
+        updateOgTag('og-description', movie.overview);
+        updateOgTag('og-image', `${posterBase}${movie.poster_path}`);
+        updateOgTag('og-url', currentUrl);
+
+        // Twitter Card tags
+        const updateTwitterTag = (id, content) => {
+            const tag = document.getElementById(id);
+            if (tag) tag.setAttribute('content', escapeHtml(content));
+        };
+
+        updateTwitterTag('twitter-title', movie.title);
+        updateTwitterTag('twitter-description', movie.overview);
+        updateTwitterTag('twitter-image', `${posterBase}${movie.poster_path}`);
+
+        // Update structured data
+        const structuredDataElement = document.getElementById('movie-structured-data');
+        if (structuredDataElement) {
+            structuredDataElement.textContent = JSON.stringify({
+                "@context": "https://schema.org",
+                "@type": "Movie",
+                "name": escapeHtml(movie.title),
+                "image": `${posterBase}${escapeHtml(movie.poster_path)}`,
+                "description": escapeHtml(movie.overview),
+                "datePublished": movie.release_date,
+                "aggregateRating": {
+                    "@type": "AggregateRating",
+                    "ratingValue": movie.vote_average,
+                    "ratingCount": movie.vote_count
+                }
+            }, null, 2);
+        }
+    }
+
     shareOnFacebook() {
         const url = encodeURIComponent(window.location.href);
         const title = encodeURIComponent(this.movieData.title);
@@ -265,7 +338,9 @@ class MovieDetails {
         const url = encodeURIComponent(window.location.href);
         const image = encodeURIComponent(`https://image.tmdb.org/t/p/w500${this.movieData.poster_path}`);
         const description = encodeURIComponent(`${this.movieData.title} - ${this.movieData.overview}`);
-        window.open(`https://pinterest.com/pin/create/button/?url=${url}&media=${image}&description=${description}`, '_blank');
+        const genresHashTags = this.movieData.genres?.map(g => `#${g.name
+            .replace(/\s+(.)/g, (_, c) => c.toUpperCase())}`).join(' ') || '';
+        window.open(`https://pinterest.com/pin/create/button/?url=${url}&media=${image}&description=${description} ${genresHashTags}`, '_blank');
     }
 
     shareOnWhatsApp() {
