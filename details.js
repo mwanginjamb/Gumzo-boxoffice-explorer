@@ -337,10 +337,11 @@ class MovieDetails {
     shareOnPinterest() {
         const url = encodeURIComponent(window.location.href);
         const image = encodeURIComponent(`https://image.tmdb.org/t/p/w500${this.movieData.poster_path}`);
-        const description = encodeURIComponent(`${this.movieData.title} - ${this.movieData.overview}`);
         const genresHashTags = this.movieData.genres?.map(g => `#${g.name
             .replace(/\s+(.)/g, (_, c) => c.toUpperCase())}`).join(' ') || '';
-        window.open(`https://pinterest.com/pin/create/button/?url=${url}&media=${image}&description=${description} ${genresHashTags}`, '_blank');
+        const description = encodeURIComponent(`${this.movieData.title ?? this.movieData.name} - ${this.movieData.overview} ${genresHashTags}`);
+
+        window.open(`https://pinterest.com/pin/create/button/?url=${url}&media=${image}&description=${description}`, '_blank');
     }
 
     shareOnWhatsApp() {
