@@ -340,7 +340,6 @@ class MovieDetails {
         const genresHashTags = this.movieData.genres?.map(g => `#${g.name
             .replace(/\s+(.)/g, (_, c) => c.toUpperCase())}`).join(' ') || '';
         const description = encodeURIComponent(`${this.movieData.title ?? this.movieData.name} - ${this.movieData.overview} ${genresHashTags}`);
-
         window.open(`https://pinterest.com/pin/create/button/?url=${url}&media=${image}&description=${description}`, '_blank');
     }
 

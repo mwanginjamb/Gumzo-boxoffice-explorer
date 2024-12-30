@@ -878,3 +878,148 @@ select[multiple]::after {
         grid-column: 1 / -1;
     }
 }
+
+/* Floating Footer */
+.floating-footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    transform: translateY(100%);
+    transition: transform 0.3s ease-in-out, position 0.3s ease-in-out;
+    z-index: 1000;
+}
+
+.floating-footer.sticky {
+    position: sticky;
+    transform: translateY(0);
+}
+
+.floating-footer.sticky.collapsed {
+    transform: translateY(calc(100% - 32px));
+}
+
+.floating-footer.visible {
+    transform: translateY(0);
+}
+
+.floating-footer.collapsed {
+    transform: translateY(calc(100% - 32px));
+}
+
+.footer-toggle {
+    height: 32px;
+    background-color: rgba(3, 37, 65, 0.9);
+    backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.footer-toggle:hover {
+    background-color: rgba(3, 37, 65, 0.95);
+}
+
+.toggle-arrow {
+    color: white;
+    transition: transform 0.3s;
+}
+
+.collapsed .toggle-arrow {
+    transform: rotate(180deg);
+}
+
+.footer-content {
+    background-color: rgba(3, 37, 65, 0.9);
+    backdrop-filter: blur(8px);
+    padding: 1.5rem;
+    color: white;
+    box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.footer-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+}
+
+.footer-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.coffee-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: #FF813F;
+    color: white;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.coffee-button:hover {
+    background-color: #FF9B66;
+}
+
+.social-link {
+    color: rgba(255, 255, 255, 0.8);
+    transition: color 0.2s;
+}
+
+.social-link:hover {
+    color: white;
+}
+
+.footer-center {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.footer-center .fa-heart {
+    color: #ef4444;
+}
+
+.footer-right {
+    display: flex;
+    gap: 1rem;
+}
+
+.footer-right a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: color 0.2s;
+}
+
+.footer-right a:hover {
+    color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .footer-wrapper {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+    }
+
+    .footer-left {
+        justify-content: center;
+    }
+
+    .footer-right {
+        justify-content: center;
+    }
+}
