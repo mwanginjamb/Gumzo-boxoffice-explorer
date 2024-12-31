@@ -16,7 +16,6 @@ class MovieApp {
     }
 
     init() {
-        this.footerRender();
         this.setupEventListeners();
         this.loadGenres();
         this.loadCountries();
@@ -92,6 +91,12 @@ class MovieApp {
         // Initialize selected counts
         ['genre', 'country', 'year'].forEach(id => {
             this.updateSelectedCount(document.getElementById(id));
+        });
+
+        // Buy a coffee
+
+        document.querySelector('.coffee-button').addEventListener('click', () => {
+            this.handleBuyCoffee();
         });
     }
 
@@ -336,42 +341,9 @@ class MovieApp {
     }
 
 
-    // Footer visibility handling
-    footerRender() {
-
-        const footer = document.querySelector('.floating-footer');
-        const footerToggle = footer.querySelector('.footer-toggle');
-        let isSticky = false;
-
-        // Handle scroll to show/hide footer
-        window.addEventListener('scroll', () => {
-            const scrollPosition = window.innerHeight + window.scrollY;
-            const scrollThreshold = document.documentElement.scrollHeight - 1200; // Adjust as needed
-
-            console.log(`scroll position is: ${scrollPosition}`)
-            console.log(`scroll Threshold is: ${scrollThreshold}`)
-
-            if (scrollPosition > scrollThreshold) {
-                if (!isSticky) {
-                    footer.classList.add('visible');
-                    footer.classList.add('sticky');
-                    isSticky = true;
-                }
-            } else {
-                // footer.classList.remove('visible');
-                footer.classList.remove('sticky');
-                footer.classList.remove('collapsed');
-                isSticky = false;
-            }
-        });
-
-        // Handle footer collapse toggle
-        footerToggle.addEventListener('click', () => {
-            // if (isSticky) {
-            footer.classList.toggle('collapsed');
-            // }
-        });
-
+    handleBuyCoffee() {
+        const url = encodeURI('https://buymeacoffee.com/gzboxoffice');
+        window.open(url, '_blank');
     }
 }
 
