@@ -3,13 +3,14 @@ class MovieDetails {
         this.mediaType = new URLSearchParams(window.location.search).get('type') || 'movie';
         this.id = new URLSearchParams(window.location.search).get('id');
         this.favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+        this.movieData = null;
 
         if (!this.id) {
             window.location.href = 'index.html';
             return;
         }
 
-        this.init();
+        this.dataReady = this.init(); // store init promise
     }
 
     async init() {
@@ -42,6 +43,13 @@ class MovieDetails {
             console.error('Error loading details:', error);
             this.showError('Failed to load movie details');
         }
+    }
+
+    // Async getter for `movieData`
+
+    async getMovieData() {
+        await this.dataReady; // ensure `init` completes
+        return this.movieData;
     }
 
 
@@ -201,9 +209,13 @@ class MovieDetails {
 
         // Helper function to safely update meta content
         const updateMetaContent = (id, content) => {
-            const element = document.getElementById(id);
-            if (element) {
-                element.content = content;
+            try {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.setAttribute('content', content);
+                }
+            } catch (e) {
+                console.log('Error: ', e.message);
             }
         };
 
@@ -225,6 +237,7 @@ class MovieDetails {
         updateMetaContent('og-description', movie.overview);
         updateMetaContent('og-image', `${posterBase}${movie.poster_path}`);
         updateMetaContent('og-url', currentUrl);
+        updateMetaContent('whatsapp-img', `${posterBase}${movie.poster_path}`);
 
         // Update Twitter Card tags
         updateMetaContent('twitter-title', movie.title);
@@ -383,6 +396,6 @@ class MovieDetails {
 
 
 // Initialize the details page
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     new MovieDetails();
 });
