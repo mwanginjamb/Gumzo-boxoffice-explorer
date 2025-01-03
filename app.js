@@ -244,7 +244,11 @@ class MovieApp {
             favoriteBtn.querySelector('i').classList.toggle('far', !isFavorite);
 
             movie.type = this.filters.mediaType;
-            favoriteBtn.addEventListener('click', () => this.toggleFavorite(movie));
+            favoriteBtn.addEventListener('click', () => {
+                this.toggleFavorite(movie)
+                umami.track('film favorite', { 'film': movie.title || movie.name })
+            });
+
 
             movieGrid.appendChild(movieElement);
         }
