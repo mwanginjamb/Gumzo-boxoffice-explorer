@@ -245,8 +245,8 @@ class MovieApp {
 
             movie.type = this.filters.mediaType;
             favoriteBtn.addEventListener('click', () => {
+                umami.track('film-favorite', { 'film': movie.title || movie.name })
                 this.toggleFavorite(movie)
-                umami.track('film favorite', { 'film': movie.title || movie.name })
             });
 
 
