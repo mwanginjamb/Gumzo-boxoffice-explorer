@@ -94,10 +94,75 @@ class MovieApp {
         });
 
         // Buy a coffee
-
         document.querySelector('.coffee-button').addEventListener('click', () => {
             this.handleBuyCoffee();
         });
+
+        // Enhanced mobile filter toggle
+        const filterToggle = document.getElementById('filterToggle');
+        const filterSection = document.querySelector('.filter-section');
+
+        filterToggle.addEventListener('click', () => {
+            this.isFilterPanelOpen = !this.isFilterPanelOpen;
+            filterSection.classList.toggle('active', this.isFilterPanelOpen);
+            document.body.style.overflow = this.isFilterPanelOpen ? 'hidden' : '';
+        });
+
+        // Close filter panel when clicking the close button
+        filterSection.addEventListener('click', (e) => {
+            // Check if clicking the pseudo-element close button (top right X)
+            if (e.target === filterSection && e.offsetY < 50 && e.offsetX > filterSection.offsetWidth - 50) {
+                this.closeFilterPanel();
+            }
+        });
+
+        // Close filter panel when selecting an option (mobile UX improvement)
+        if (window.innerWidth <= 768) {
+            const filterInputs = filterSection.querySelectorAll('select, input');
+            filterInputs.forEach(input => {
+                input.addEventListener('change', () => {
+                    // Only close for single selects, not multi-selects
+                    if (input.type !== 'select-multiple') {
+                        this.closeFilterPanel();
+                    }
+                });
+            });
+        }
+
+        // Handle back button/escape key for filter panel
+        window.addEventListener('popstate', () => {
+            if (this.isFilterPanelOpen) {
+                this.closeFilterPanel();
+            }
+        });
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && this.isFilterPanelOpen) {
+                this.closeFilterPanel();
+            }
+        });
+
+        // Clear filters button enhanced for mobile
+        document.getElementById('clearFilters').addEventListener('click', () => {
+            this.clearFilters();
+            if (window.innerWidth <= 768) {
+                this.closeFilterPanel();
+            }
+        });
+
+        // Handle orientation change
+        window.addEventListener('orientationchange', () => {
+            if (this.isFilterPanelOpen) {
+                this.closeFilterPanel();
+            }
+        });
+
+    }
+
+    closeFilterPanel() {
+        this.isFilterPanelOpen = false;
+        document.querySelector('.filter-section').classList.remove('active');
+        document.body.style.overflow = '';
     }
 
     async loadGenres() {
@@ -316,14 +381,13 @@ class MovieApp {
     }
 
     clearFilters() {
-        // Reset all multi-select elements
+        // Existing clear filters logic
         ['genre', 'country', 'year'].forEach(filterId => {
             const element = document.getElementById(filterId);
             Array.from(element.options).forEach(option => option.selected = false);
             this.updateSelectedCount(element);
         });
 
-        // Reset filters object
         this.filters = {
             mediaType: this.filters.mediaType,
             sortBy: 'popularity.desc',
@@ -333,16 +397,51 @@ class MovieApp {
             countries: []
         };
 
-        // Reset search input
         document.getElementById('searchInput').value = '';
 
-        // Fetch movies with cleared filters
+        // Reset sort-by to default
+        document.getElementById('sortBy').value = 'popularity.desc';
+
         this.resetAndFetch();
+
+        // Show feedback for mobile users
+        if (window.innerWidth <= 768) {
+            // Optional: Show a brief feedback message
+            const feedback = document.createElement('div');
+            feedback.style.cssText = `
+                position: fixed;
+                bottom: 80px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: var(--secondary-color);
+                color: white;
+                padding: 8px 16px;
+                border-radius: 4px;
+                z-index: 1002;
+            `;
+            feedback.textContent = 'Filters cleared';
+            document.body.appendChild(feedback);
+            setTimeout(() => feedback.remove(), 2000);
+        }
     }
 
     updateSelectedCount(selectElement) {
-        const selectedCount = Array.from(selectElement.selectedOptions).filter(option => option.value !== '').length;
-        selectElement.setAttribute('data-selected-count', selectedCount ? `${selectedCount} selected` : '');
+        const selectedCount = Array.from(selectElement.selectedOptions)
+            .filter(option => option.value !== '').length;
+
+        // Update the data attribute for the select element
+        selectElement.setAttribute('data-selected-count',
+            selectedCount ? `${selectedCount} selected` : '');
+
+        // Update the mobile-friendly display if applicable
+        if (window.innerWidth <= 768) {
+            const label = selectElement.previousElementSibling;
+            if (label) {
+                label.textContent = selectedCount ?
+                    `${label.dataset.originalText} (${selectedCount})` :
+                    label.dataset.originalText;
+            }
+        }
     }
 
 

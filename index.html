@@ -53,38 +53,68 @@
 <body>
     <header>
         <h1>Gumzo Film Explorer</h1>
+
+        <!-- Updated Filter Section -->
         <div class="filter-section">
+            <!-- Close button for mobile -->
+            <div class="filter-header mobile-only">
+                <h2>Filters</h2>
+                <button class="filter-close" aria-label="Close filters">×</button>
+            </div>
+
             <div class="filter-group">
+                <label for="mediaType">Type</label>
                 <select id="mediaType">
                     <option value="movie">Movies</option>
                     <option value="tv">TV Shows</option>
                 </select>
+
+                <label for="sortBy">Sort By</label>
                 <select id="sortBy">
                     <option value="popularity.desc">Popularity</option>
                     <option value="vote_average.desc">Rating</option>
                     <option value="release_date.desc">Release Date</option>
                 </select>
-                <select id="genre" multiple>
+            </div>
+
+            <div class="filter-group">
+                <label for="genre" data-original-text="Genres">Genres</label>
+                <select id="genre" multiple aria-label="Select genres">
                     <option value="">All Genres</option>
                     <!-- Will be populated via JavaScript -->
                 </select>
-                <select id="country" multiple>
+
+                <label for="country" data-original-text="Countries">Countries</label>
+                <select id="country" multiple aria-label="Select countries">
                     <option value="">All Countries</option>
                     <!-- Will be populated via JavaScript -->
                 </select>
             </div>
+
             <div class="filter-group">
-                <input type="text" id="searchInput" placeholder="Search...">
-                <select id="year" multiple>
+                <label for="searchInput">Search</label>
+                <input type="text" id="searchInput" placeholder="Search movies or shows..." />
+
+                <label for="year" data-original-text="Years">Years</label>
+                <select id="year" multiple aria-label="Select years">
                     <option value="">All Years</option>
                     <!-- Will be populated via JavaScript -->
                 </select>
-                <button id="clearFilters">Clear Filters</button>
-                <button id="filterToggle" class="mobile-only">
-                    <i class="fas fa-filter"></i>
+            </div>
+
+            <div class="filter-actions">
+                <button id="clearFilters" class="clear-filters-btn">
+                    <i class="fas fa-times"></i>
+                    Clear Filters
                 </button>
             </div>
         </div>
+
+        <!-- Mobile filter toggle button -->
+        <button id="filterToggle" class="mobile-only" aria-label="Toggle filters">
+            <i class="fas fa-filter"></i>
+            <span class="filter-count"></span>
+        </button>
     </header>
 
     <main>
