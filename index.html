@@ -59,7 +59,6 @@
             <!-- Close button for mobile -->
             <div class="filter-header mobile-only">
                 <h2>Filters</h2>
-                <button class="filter-close" aria-label="Close filters">×</button>
             </div>
 
             <div class="filter-group">
@@ -111,7 +110,8 @@
         </div>
 
         <!-- Mobile filter toggle button -->
-        <button id="filterToggle" class="mobile-only" aria-label="Toggle filters">
+        <button id="filterToggle" class="mobile-only" aria-label="Toggle filters"
+            data-umami-event="mobile-filter-toggle">
             <i class="fas fa-filter"></i>
             <span class="filter-count"></span>
         </button>
@@ -120,7 +120,8 @@
     <main>
         <div class="affiliate-banner" id="affiliateBanner">
             <a href="#" target="_blank" rel="nofollow sponsored" data-umami-event="amazon assoc"></a>
-            <button class="banner-close" id="closeBanner" aria-label="Close banner">×</button>
+            <button class="banner-close" id="closeBanner" aria-label="Close banner"
+                data-umami-event="close amazon banner">×</button>
         </div>
         <div class="banner-toggle" id="bannerToggle">
             <button class="toggle-button">View Amazing Amazon Deals</button>
