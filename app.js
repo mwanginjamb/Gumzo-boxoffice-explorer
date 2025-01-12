@@ -112,6 +112,7 @@ class MovieApp {
         filterSection.addEventListener('click', (e) => {
             // Check if clicking the pseudo-element close button (top right X)
             if (e.target === filterSection && e.offsetY < 50 && e.offsetX > filterSection.offsetWidth - 50) {
+                umami.track('mobile-filter-close');
                 this.closeFilterPanel();
             }
         });
